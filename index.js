@@ -1,12 +1,25 @@
-const http = require("http");
+const express = require('express');
 
-const PORT = 3000;
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("Hello from Node + Docker 🚀");
+app.use(express.json());
+
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+    });
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
+app.get('/test', (req, res) => {
+    res.send('Express test server is running 🚀');
+});
+
+app.get('/error', (req, res) => {
+    res.status(500).json({ error: 'Intentional test error' });
+});
+
+app.listen(PORT, () => {
+    console.log(`✅ Server running on http://localhost:${PORT}`);
 });
